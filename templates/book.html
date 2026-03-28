@@ -200,7 +200,7 @@
             <span class="price">${{ svc.price }}</span>
             <span class="time"><i class="bi bi-clock"></i> {{ svc.time }}</span>
           </div>
-          <a href="{{ url_for('request_form', service=svc.name, tier='1') }}" class="btn-book">Book This →</a>
+          <a href="{{ url_for('request_form', service=svc.service_type, tier='1') }}" class="btn-book">Book This →</a>
         </div>
       </div>
       {% endfor %}

@@ -220,40 +220,40 @@ FLAT_RATE_SERVICES = [
         "category": "Bathroom",
         "emoji": "🚿",
         "services": [
-            {"name": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175, "id": "bath-fan"},
-            {"name": "Faucet or Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125, "id": "faucet"},
-            {"name": "Caulk & Grout Refresh", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150, "id": "caulk"},
-            {"name": "Toilet Repair or Replace", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110, "id": "toilet"},
+            {"name": "Bathroom Fan Replacement", "service_type": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175},
+            {"name": "Faucet or Shower Repair", "service_type": "Faucet and Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125},
+            {"name": "Caulk & Grout Refresh", "service_type": "Caulk and Grout", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150},
+            {"name": "Toilet Repair or Replace", "service_type": "Bathroom Fixtures", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110},
         ]
     },
     {
         "category": "Kitchen",
         "emoji": "🍳",
         "services": [
-            {"name": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200, "id": "dishwasher"},
-            {"name": "Kitchen Faucet Replacement", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125, "id": "kitchen-faucet"},
-            {"name": "Cabinet Hardware Upgrade", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95, "id": "cabinet-hardware"},
-            {"name": "Under-Sink Reverse Osmosis Install", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200, "id": "ro-water"},
+            {"name": "Dishwasher Installation", "service_type": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200},
+            {"name": "Kitchen Faucet Replacement", "service_type": "Faucet and Shower Repair", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125},
+            {"name": "Cabinet Hardware Upgrade", "service_type": "Cabinet Upgrades", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95},
+            {"name": "Under-Sink Reverse Osmosis Install", "service_type": "Reverse Osmosis Water Installation", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200},
         ]
     },
     {
         "category": "General & Electrical",
         "emoji": "🔧",
         "services": [
-            {"name": "Ceiling Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "id": "ceiling-fan"},
-            {"name": "Light Fixture Replacement", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "id": "light-fixture"},
-            {"name": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "id": "doorbell"},
-            {"name": "Smoke & CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "id": "smoke-detector"},
+            {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130},
+            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110},
+            {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95},
+            {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85},
         ]
     },
     {
         "category": "Doors, Walls & Assembly",
         "emoji": "🚪",
         "services": [
-            {"name": "Door Adjustment or Repair", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95, "id": "door-adjust"},
-            {"name": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95, "id": "furniture"},
-            {"name": "Shelf & TV Mount Installation", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95, "id": "shelves"},
-            {"name": "Wall Repair / Drywall Patch", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120, "id": "drywall"},
+            {"name": "Door Adjustment or Repair", "service_type": "Door Adjustments", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95},
+            {"name": "Furniture Assembly", "service_type": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95},
+            {"name": "Shelf & TV Mount Installation", "service_type": "Shelf and Picture Hanging", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95},
+            {"name": "Wall Repair / Drywall Patch", "service_type": "Wall Repair / Drywall", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120},
         ]
     },
 ]
