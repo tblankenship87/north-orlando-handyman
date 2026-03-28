@@ -4,7 +4,7 @@
 <div class="row justify-content-center">
   <div class="col-lg-7">
     {% if quote.status == 'approved' %}
-      <div class="alert alert-success text-center fw-bold">✅ Quote Approved — we will be in touch to confirm your appointment!</div>
+      <div class="alert alert-success text-center fw-bold">✅ Quote Approved — our team will reach out shortly to lock in your appointment.</div>
     {% elif quote.status == 'rejected' %}
       <div class="alert alert-secondary text-center">Quote declined. Questions? Give us a call at <a href="tel:+14071234567">(407) 123-4567</a></div>
     {% endif %}
@@ -73,7 +73,7 @@
               </form>
             </div>
           </div>
-          <p class="text-muted text-center mt-3 small">By approving, you are confirming you would like us to proceed with this work.</p>
+          <p class="text-muted text-center mt-3 small">By approving, you are confirming you are ready for us to get started.</p>
         {% endif %}
       </div>
     </div>
