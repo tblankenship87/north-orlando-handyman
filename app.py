@@ -223,40 +223,40 @@ FLAT_RATE_SERVICES = [
         "category": "Bathroom",
         "emoji": "🚿",
         "services": [
-            {"name": "Bathroom Fan Replacement", "service_type": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175, "photo_url": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&h=250&fit=crop"},
-            {"name": "Faucet or Shower Repair", "service_type": "Faucet and Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
-            {"name": "Caulk & Grout Refresh", "service_type": "Caulk and Grout", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150, "photo_url": "https://images.unsplash.com/photo-1620626011761-996317702149?w=400&h=250&fit=crop"},
-            {"name": "Toilet Repair or Replace", "service_type": "Bathroom Fixtures", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://images.unsplash.com/photo-1564540574859-0dfb63985953?w=400&h=250&fit=crop"},
+            {"name": "Bathroom Fan Replacement", "service_type": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20220728_031438137-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Faucet or Shower Repair", "service_type": "Faucet and Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250104_163820582-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Caulk & Grout Refresh", "service_type": "Caulk and Grout", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20230616_0200478123.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Toilet Repair or Replace", "service_type": "Bathroom Fixtures", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250218_033320193-scaled.jpg?resize=400%2C300&ssl=1"},
         ]
     },
     {
         "category": "Kitchen",
         "emoji": "🍳",
         "services": [
-            {"name": "Dishwasher Installation", "service_type": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200, "photo_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop"},
-            {"name": "Kitchen Faucet Replacement", "service_type": "Faucet and Shower Repair", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=250&fit=crop"},
+            {"name": "Dishwasher Installation", "service_type": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250104_164620566-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Kitchen Faucet Replacement", "service_type": "Faucet and Shower Repair", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250104_163820582-scaled.jpg?resize=400%2C300&ssl=1"},
             {"name": "Cabinet Hardware Upgrade", "service_type": "Cabinet Upgrades", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&h=250&fit=crop"},
-            {"name": "Under-Sink Reverse Osmosis Install", "service_type": "Reverse Osmosis Water Installation", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
+            {"name": "Under-Sink Reverse Osmosis Install", "service_type": "Reverse Osmosis Water Installation", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250218_031349396-scaled.jpg?resize=400%2C300&ssl=1"},
         ]
     },
     {
         "category": "General & Electrical",
         "emoji": "🔧",
         "services": [
-            {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "photo_url": "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=400&h=250&fit=crop"},
-            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=400&h=250&fit=crop"},
-            {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "photo_url": "https://images.unsplash.com/photo-1558002038-bb4237bb1bef?w=400&h=250&fit=crop"},
-            {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
+            {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20220728_031438137-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20220728_031438137-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "photo_url": ""},
+            {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "photo_url": ""},
         ]
     },
     {
         "category": "Doors, Walls & Assembly",
         "emoji": "🚪",
         "services": [
-            {"name": "Door Adjustment or Repair", "service_type": "Door Adjustments", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95, "photo_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop"},
+            {"name": "Door Adjustment or Repair", "service_type": "Door Adjustments", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20250218_115704096-scaled.jpg?resize=400%2C300&ssl=1"},
             {"name": "Furniture Assembly", "service_type": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=250&fit=crop"},
-            {"name": "Shelf & TV Mount Installation", "service_type": "Shelf and Picture Hanging", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=250&fit=crop"},
-            {"name": "Wall Repair / Drywall Patch", "service_type": "Wall Repair / Drywall", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120, "photo_url": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=250&fit=crop"},
+            {"name": "Shelf & TV Mount Installation", "service_type": "Shelf and Picture Hanging", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/FirePlace-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Wall Repair / Drywall Patch", "service_type": "Wall Repair / Drywall", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20221231_232501103-scaled.jpg?resize=400%2C300&ssl=1"},
         ]
     },
 ]
