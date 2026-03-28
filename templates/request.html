@@ -14,9 +14,16 @@
         {% endif %}
       </div>
       {% if prefill_tier == '1' %}
-      <div class="alert alert-warning border-0 rounded-0 mb-0" style="font-size:0.85rem;">
-        <i class="bi bi-lightning-charge me-1"></i><strong>Flat-Rate Booking</strong> — You'll pay the listed price on completion. No surprises.
-        <a href="{{ url_for('book_landing') }}" class="float-end text-muted" style="font-size:0.8rem;">← Back to services</a>
+      <div class="border-0 rounded-0 mb-0 px-4 py-3" style="background:#1a2744;font-size:0.85rem;color:#fff;">
+        <div class="d-flex align-items-start justify-content-between gap-3">
+          <div>
+            <strong><i class="bi bi-lightning-charge-fill me-1" style="color:#f97316;"></i>Flat-Rate Booking</strong>
+            <div style="color:rgba(255,255,255,0.75);margin-top:0.25rem;">
+              A $50 booking deposit is required to hold your date. We'll send you a payment link after confirming availability. The deposit is credited toward the total at completion.
+            </div>
+          </div>
+          <a href="{{ url_for('book_landing') }}" style="color:rgba(255,255,255,0.5);font-size:0.8rem;white-space:nowrap;text-decoration:none;">← Back</a>
+        </div>
       </div>
       {% endif %}
       <div class="card-body p-4">
