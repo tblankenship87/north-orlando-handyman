@@ -78,6 +78,9 @@
         {% endif %}
 
         <a href="{{ url_for('admin_quote_edit', quote_id=quote.id) }}" class="btn btn-outline-warning btn-sm">✏️ Edit Quote</a>
+        <form method="POST" action="{{ url_for('admin_quote_delete', quote_id=quote.id) }}" class="d-inline" onsubmit="return confirm('Discard this quote and return lead to queue?')">
+          <button type="submit" class="btn btn-outline-danger btn-sm">🗑 Discard</button>
+        </form>
         <a href="{{ url_for('admin_quotes') }}" class="btn btn-outline-secondary btn-sm">← All Quotes</a>
       </div>
     </div>

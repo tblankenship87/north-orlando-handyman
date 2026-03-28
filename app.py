@@ -378,14 +378,16 @@ def admin_lead_convert(lead_id):
         )
         db.session.add(customer)
         db.session.flush()
-    # Create job
-    job = Job(
-        customer_id=customer.id, lead_id=lead.id,
-        title=lead.service_type, service_type=lead.service_type,
-        scheduled_date=lead.preferred_date
-    )
-    db.session.add(job)
-    db.session.flush()
+    # Reuse existing job for this lead if one already exists (prevents duplicates)
+    job = Job.query.filter_by(lead_id=lead.id).first()
+    if not job:
+        job = Job(
+            customer_id=customer.id, lead_id=lead.id,
+            title=lead.service_type, service_type=lead.service_type,
+            scheduled_date=lead.preferred_date
+        )
+        db.session.add(job)
+        db.session.flush()
     lead.status = 'quoted'
     db.session.commit()
     return redirect(url_for('admin_quote_new', job_id=job.id))
@@ -452,6 +454,23 @@ def admin_quote_detail(quote_id):
     quote_url = url_for('quote_view', token=quote.token, _external=True)
     return render_template('admin/quote_detail.html', quote=quote,
                            quote_url=quote_url, status_colors=STATUS_COLORS)
+
+
+@app.route('/admin/quotes/<int:quote_id>/delete', methods=['POST'])
+@admin_required
+def admin_quote_delete(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+    # Reset lead status back to 'contacted' so it goes back in the queue
+    if quote.lead_id:
+        lead = Lead.query.get(quote.lead_id)
+        if lead:
+            lead.status = 'contacted'
+    for item in quote.items:
+        db.session.delete(item)
+    db.session.delete(quote)
+    db.session.commit()
+    flash('Quote discarded. Lead moved back to queue.', 'info')
+    return redirect(url_for('admin_leads'))
 
 
 @app.route('/admin/quotes/<int:quote_id>/edit')
@@ -576,9 +595,32 @@ def run_migrations():
                 print(f'Migration: added {table}.{col}')
         conn.commit()
 
+def dedup_jobs():
+    """Remove duplicate jobs created for the same lead (keep the earliest one)."""
+    with app.app_context():
+        from sqlalchemy import text
+        with db.engine.connect() as conn:
+            # Find lead_ids with more than one job
+            result = conn.execute(text(
+                "SELECT lead_id, COUNT(*) as cnt FROM job WHERE lead_id IS NOT NULL GROUP BY lead_id HAVING cnt > 1"
+            ))
+            rows = result.fetchall()
+            for row in rows:
+                lead_id = row[0]
+                # Keep the lowest id (earliest), delete the rest
+                dups = conn.execute(text(
+                    "SELECT id FROM job WHERE lead_id = :lid ORDER BY id ASC"
+                ), {"lid": lead_id}).fetchall()
+                keep_id = dups[0][0]
+                for dup in dups[1:]:
+                    conn.execute(text("DELETE FROM job WHERE id = :id"), {"id": dup[0]})
+                    print(f"Dedup: removed duplicate job {dup[0]} for lead {lead_id}")
+            conn.commit()
+
 with app.app_context():
     db.create_all()
     run_migrations()
+    dedup_jobs()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
