@@ -24,6 +24,51 @@ db = SQLAlchemy(app)
 ADMIN_USER = os.environ.get('ADMIN_USER', 'admin')
 ADMIN_PASS = os.environ.get('ADMIN_PASS', 'handyman2026')
 
+# Suggested line items per service — Kyle adjusts these to his actual rates
+SERVICE_QUOTE_TEMPLATES = {
+    'French Drain Installation': [
+        {'description': 'French drain pipe (perforated)', 'quantity': 50, 'unit_price': 2.50},
+        {'description': 'Gravel/aggregate (per ton)', 'quantity': 3, 'unit_price': 55.00},
+        {'description': 'Filter fabric / landscape cloth', 'quantity': 1, 'unit_price': 45.00},
+        {'description': 'Excavation & labor (hours)', 'quantity': 6, 'unit_price': 75.00},
+        {'description': 'Cleanup & haul away', 'quantity': 1, 'unit_price': 75.00},
+    ],
+    'Sprinkler Service and Repair': [
+        {'description': 'Service call / diagnostic', 'quantity': 1, 'unit_price': 75.00},
+        {'description': 'Labor (hours)', 'quantity': 2, 'unit_price': 65.00},
+        {'description': 'Parts & materials', 'quantity': 1, 'unit_price': 50.00},
+    ],
+    'Faucet and Shower Repair': [
+        {'description': 'Labor (hours)', 'quantity': 1.5, 'unit_price': 65.00},
+        {'description': 'Parts & materials', 'quantity': 1, 'unit_price': 40.00},
+    ],
+    'Lighting and Fan Installation': [
+        {'description': 'Labor (hours)', 'quantity': 2, 'unit_price': 65.00},
+        {'description': 'Parts & materials', 'quantity': 1, 'unit_price': 30.00},
+    ],
+    'Wall Repair / Drywall': [
+        {'description': 'Drywall patch & repair (sq ft)', 'quantity': 10, 'unit_price': 8.00},
+        {'description': 'Labor (hours)', 'quantity': 2, 'unit_price': 65.00},
+        {'description': 'Materials (joint compound, tape, etc.)', 'quantity': 1, 'unit_price': 25.00},
+    ],
+    'Tile Replacement / Installation': [
+        {'description': 'Tile installation (sq ft)', 'quantity': 20, 'unit_price': 12.00},
+        {'description': 'Tile & materials', 'quantity': 1, 'unit_price': 80.00},
+        {'description': 'Labor (hours)', 'quantity': 4, 'unit_price': 65.00},
+    ],
+    'Furniture Assembly': [
+        {'description': 'Assembly labor (hours)', 'quantity': 2, 'unit_price': 55.00},
+    ],
+    'Dishwasher Installation': [
+        {'description': 'Installation labor', 'quantity': 1, 'unit_price': 150.00},
+        {'description': 'Parts & fittings', 'quantity': 1, 'unit_price': 25.00},
+    ],
+    'General Repairs / Other': [
+        {'description': 'Labor (hours)', 'quantity': 2, 'unit_price': 65.00},
+        {'description': 'Materials', 'quantity': 1, 'unit_price': 30.00},
+    ],
+}
+
 SERVICE_TYPES = [
     'Sprinkler Service and Repair',
     'French Drain Installation',
@@ -344,7 +389,12 @@ def admin_lead_convert(lead_id):
 def admin_quote_new():
     job_id = request.args.get('job_id', type=int)
     job = Job.query.get_or_404(job_id) if job_id else None
-    return render_template('admin/quote_builder.html', job=job, services=SERVICE_TYPES)
+    template_items = []
+    if job and job.service_type:
+        template_items = SERVICE_QUOTE_TEMPLATES.get(job.service_type,
+            SERVICE_QUOTE_TEMPLATES.get('General Repairs / Other', []))
+    return render_template('admin/quote_builder.html', job=job,
+                           services=SERVICE_TYPES, template_items=template_items)
 
 
 @app.route('/admin/quotes', methods=['GET', 'POST'])

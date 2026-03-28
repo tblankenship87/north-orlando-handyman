@@ -2,6 +2,12 @@
 {% block page_title %}Build Quote{% endblock %}
 {% block content %}
 
+{% if template_items %}
+<div class="alert alert-info border-0 mb-3">
+  <i class="bi bi-magic"></i> <strong>Suggested line items loaded</strong> for {{ job.service_type }} — adjust quantities and prices to match the actual job.
+</div>
+{% endif %}
+
 {% if job %}
 <div class="alert alert-light border mb-4">
   <strong>Job:</strong> {{ job.title }}
@@ -28,13 +34,25 @@
             </tr>
           </thead>
           <tbody id="line-items">
-            <tr class="line-item">
-              <td><input type="text" name="desc[]" class="form-control form-control-sm" placeholder="Labor, materials, etc." required></td>
-              <td><input type="number" name="qty[]" class="form-control form-control-sm qty" value="1" min="0.01" step="0.01"></td>
-              <td><input type="number" name="price[]" class="form-control form-control-sm price" value="0" min="0" step="0.01"></td>
-              <td><input type="text" class="form-control form-control-sm line-total bg-light" value="$0.00" readonly></td>
-              <td><button type="button" class="btn btn-sm btn-outline-danger remove-row">×</button></td>
-            </tr>
+            {% if template_items %}
+              {% for item in template_items %}
+              <tr class="line-item">
+                <td><input type="text" name="desc[]" class="form-control form-control-sm" value="{{ item.description }}" required></td>
+                <td><input type="number" name="qty[]" class="form-control form-control-sm qty" value="{{ item.quantity }}" min="0.01" step="0.01"></td>
+                <td><input type="number" name="price[]" class="form-control form-control-sm price" value="{{ item.unit_price }}" min="0" step="0.01"></td>
+                <td><input type="text" class="form-control form-control-sm line-total bg-light" value="${{ '%.2f'|format(item.quantity * item.unit_price) }}" readonly></td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger remove-row">×</button></td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr class="line-item">
+                <td><input type="text" name="desc[]" class="form-control form-control-sm" placeholder="Labor, materials, etc." required></td>
+                <td><input type="number" name="qty[]" class="form-control form-control-sm qty" value="1" min="0.01" step="0.01"></td>
+                <td><input type="number" name="price[]" class="form-control form-control-sm price" value="0" min="0" step="0.01"></td>
+                <td><input type="text" class="form-control form-control-sm line-total bg-light" value="$0.00" readonly></td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger remove-row">×</button></td>
+              </tr>
+            {% endif %}
           </tbody>
         </table>
       </div>
