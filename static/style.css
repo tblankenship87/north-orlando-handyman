@@ -4,7 +4,8 @@
 }
 
 /* ── Admin Layout ─────────────────────────────── */
-.admin-body { background: #f0f2f5; margin: 0; }
+.admin-body { background: #f0f2f5; margin: 0; overscroll-behavior: none; }
+html { overscroll-behavior: none; }
 .admin-layout { display: flex; min-height: 100vh; }
 
 .admin-sidebar {
@@ -41,7 +42,7 @@
 .sidebar-nav li a.active { border-left: 3px solid var(--orange); }
 .sidebar-nav .mt-auto { margin-top: auto; }
 
-.admin-main { margin-left: 220px; display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+.admin-main { margin-left: 220px; display: flex; flex-direction: column; flex: 1; }
 .admin-topbar {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
@@ -74,4 +75,4 @@
 }
 
 /* ── Public form ──────────────────────────────── */
-body:not(.admin-body) { background: #f8fafc; }
+body:not(.admin-body) { background: #f8fafc; overscroll-behavior: none; }
