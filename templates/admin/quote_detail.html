@@ -1,0 +1,85 @@
+{% extends 'admin/base.html' %}
+{% block page_title %}Quote #{{ quote.id }}{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center fw-bold">
+        Quote #{{ quote.id }}
+        <span class="badge bg-{{ status_colors.get(quote.status, 'secondary') }} fs-6">{{ quote.status.title() }}</span>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr><th>Description</th><th class="text-end">Qty</th><th class="text-end">Unit Price</th><th class="text-end">Total</th></tr>
+          </thead>
+          <tbody>
+            {% for item in quote.items %}
+            <tr>
+              <td>{{ item.description }}</td>
+              <td class="text-end">{{ item.quantity }}</td>
+              <td class="text-end">${{ '%.2f'|format(item.unit_price) }}</td>
+              <td class="text-end">${{ '%.2f'|format(item.line_total) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3" class="text-end">Subtotal</td><td class="text-end">${{ '%.2f'|format(quote.subtotal) }}</td></tr>
+            {% if quote.tax_rate %}<tr><td colspan="3" class="text-end">Tax ({{ quote.tax_rate }}%)</td><td class="text-end">${{ '%.2f'|format(quote.total - quote.subtotal) }}</td></tr>{% endif %}
+            <tr class="table-dark fw-bold"><td colspan="3" class="text-end">Total</td><td class="text-end">${{ '%.2f'|format(quote.total) }}</td></tr>
+          </tfoot>
+        </table>
+        {% if quote.notes %}<div class="bg-light p-3 rounded small">{{ quote.notes }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header fw-bold">Actions</div>
+      <div class="card-body d-grid gap-2">
+
+        {% if quote.status == 'draft' %}
+          <form method="POST" action="{{ url_for('admin_quote_send', quote_id=quote.id) }}">
+            <div class="d-grid">
+              <button class="btn btn-info text-white fw-bold">📤 Mark as Sent</button>
+            </div>
+          </form>
+        {% endif %}
+
+        {% if quote.status in ['sent', 'draft'] %}
+          <div class="border rounded p-3 bg-light">
+            <small class="text-muted d-block mb-1">Customer link (share via text/email):</small>
+            <code class="small d-block text-break">{{ quote_url }}</code>
+          </div>
+        {% endif %}
+
+        {% if quote.status == 'approved' %}
+          <div class="alert alert-success mb-0">✅ Approved on {{ quote.approved_at.strftime('%b %d') }}</div>
+          {% if not quote.invoices %}
+            <form method="POST" action="{{ url_for('admin_invoices') }}">
+              <input type="hidden" name="quote_id" value="{{ quote.id }}">
+              <div class="d-grid">
+                <button class="btn text-white fw-bold" style="background:#1a2744;">🧾 Create Invoice</button>
+              </div>
+            </form>
+          {% else %}
+            <a href="{{ url_for('admin_invoices') }}" class="btn btn-outline-primary">View Invoice</a>
+          {% endif %}
+        {% endif %}
+
+        {% if quote.customer %}
+          <div class="border rounded p-3">
+            <small class="text-muted d-block">Customer</small>
+            <strong>{{ quote.customer.name }}</strong><br>
+            <small>{{ quote.customer.phone }}</small>
+          </div>
+        {% endif %}
+
+        <a href="{{ url_for('admin_quotes') }}" class="btn btn-outline-secondary btn-sm">← All Quotes</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

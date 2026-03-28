@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Payment Confirmed — North Orlando Handyman{% endblock %}
+{% block content %}
+<div class="row justify-content-center text-center mt-5">
+  <div class="col-lg-5">
+    <div class="display-1 mb-3">🎉</div>
+    <h2 class="fw-bold" style="color:#1a2744;">Payment Received!</h2>
+    <p class="lead text-muted">Thank you for your business. Kyle appreciates it!</p>
+    <p class="text-muted small">Invoice #{{ invoice.id }} — ${{ '%.2f'|format(invoice.amount) }}</p>
+    <p class="text-muted">A receipt has been sent to your email. If you have any questions about the work, reach out anytime.</p>
+    <div class="mt-4">
+      <a href="{{ url_for('request_form') }}" class="btn text-white" style="background:#f97316;">Book Another Job</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

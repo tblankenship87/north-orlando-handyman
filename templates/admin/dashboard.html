@@ -1,0 +1,103 @@
+{% extends 'admin/base.html' %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card border-primary">
+      <div class="stat-icon text-primary"><i class="bi bi-person-plus-fill"></i></div>
+      <div class="stat-num">{{ new_leads }}</div>
+      <div class="stat-label">New Leads</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card border-warning">
+      <div class="stat-icon text-warning"><i class="bi bi-hammer"></i></div>
+      <div class="stat-num">{{ open_jobs }}</div>
+      <div class="stat-label">Open Jobs</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card border-info">
+      <div class="stat-icon text-info"><i class="bi bi-file-earmark-text-fill"></i></div>
+      <div class="stat-num">{{ pending_quotes }}</div>
+      <div class="stat-label">Pending Quotes</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card border-success">
+      <div class="stat-icon text-success"><i class="bi bi-cash-stack"></i></div>
+      <div class="stat-num">${{ '%.0f'|format(revenue) }}</div>
+      <div class="stat-label">Revenue Collected</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header fw-bold d-flex justify-content-between">
+        Recent Leads
+        <a href="{{ url_for('admin_leads') }}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Name</th><th>Service</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              {% for lead in recent_leads %}
+              <tr>
+                <td class="fw-semibold">{{ lead.name }}</td>
+                <td><small>{{ lead.service_type }}</small></td>
+                <td><span class="badge bg-{{ status_colors.get(lead.status, 'secondary') }}">{{ lead.status }}</span></td>
+                <td><small class="text-muted">{{ lead.created_at.strftime('%m/%d') }}</small></td>
+                <td><a href="{{ url_for('admin_lead_detail', lead_id=lead.id) }}" class="btn btn-xs btn-outline-secondary btn-sm">View</a></td>
+              </tr>
+              {% else %}
+              <tr><td colspan="5" class="text-center text-muted py-4">No leads yet — share your booking link!</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header fw-bold d-flex justify-content-between">
+        Open Jobs
+        <a href="{{ url_for('admin_jobs') }}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for job in upcoming_jobs %}
+              <tr>
+                <td class="fw-semibold">{% if job.customer %}{{ job.customer.name }}{% else %}—{% endif %}</td>
+                <td><small>{{ job.service_type or job.title }}</small></td>
+                <td><span class="badge bg-{{ status_colors.get(job.status, 'secondary') }}">{{ job.status }}</span></td>
+              </tr>
+              {% else %}
+              <tr><td colspan="3" class="text-center text-muted py-4">No open jobs</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-body text-center">
+        <p class="text-muted small mb-2">Your booking link:</p>
+        <code class="small">{{ request.host_url }}request</code>
+        <div class="mt-2">
+          <a href="{{ url_for('request_form') }}" target="_blank" class="btn btn-sm text-white" style="background:#f97316;">Open Form ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

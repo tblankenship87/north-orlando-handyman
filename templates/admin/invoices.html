@@ -1,0 +1,27 @@
+{% extends 'admin/base.html' %}
+{% block page_title %}Invoices{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>#</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th>Link</th></tr></thead>
+      <tbody>
+        {% for inv in invoices %}
+        <tr>
+          <td>{{ inv.id }}</td>
+          <td>{% if inv.quote and inv.quote.customer %}{{ inv.quote.customer.name }}{% else %}—{% endif %}</td>
+          <td class="fw-semibold">${{ '%.2f'|format(inv.amount) }}</td>
+          <td><span class="badge bg-{{ status_colors.get(inv.status, 'secondary') }}">{{ inv.status }}</span></td>
+          <td><small class="text-muted">{{ inv.created_at.strftime('%m/%d/%y') }}</small></td>
+          <td>
+            <a href="{{ url_for('invoice_view', token=inv.token) }}" target="_blank" class="btn btn-sm btn-outline-success">Customer Link ↗</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-5">No invoices yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

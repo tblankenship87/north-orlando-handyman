@@ -1,0 +1,77 @@
+:root {
+  --navy: #1a2744;
+  --orange: #f97316;
+}
+
+/* ── Admin Layout ─────────────────────────────── */
+.admin-body { background: #f0f2f5; margin: 0; }
+.admin-layout { display: flex; min-height: 100vh; }
+
+.admin-sidebar {
+  width: 220px;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-brand {
+  padding: 1.25rem 1rem;
+  font-weight: 700;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-nav { list-style: none; padding: 0.5rem 0; margin: 0; flex: 1; }
+.sidebar-nav li a {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-nav li a:hover, .sidebar-nav li a.active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.sidebar-nav li a.active { border-left: 3px solid var(--orange); }
+.sidebar-nav .mt-auto { margin-top: auto; }
+
+.admin-main { margin-left: 220px; display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+.admin-topbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  position: sticky; top: 0; z-index: 50;
+}
+.admin-content { padding: 1.5rem; flex: 1; }
+
+/* ── Stat Cards ───────────────────────────────── */
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  border-left: 4px solid;
+  padding: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  text-align: center;
+}
+.stat-icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.stat-num { font-size: 2rem; font-weight: 700; color: #1a2744; line-height: 1; }
+.stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
+
+/* ── Mobile ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .admin-sidebar { width: 100%; position: relative; height: auto; }
+  .admin-main { margin-left: 0; }
+  .admin-layout { flex-direction: column; }
+  .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0.25rem; }
+  .sidebar-nav li a { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+}
+
+/* ── Public form ──────────────────────────────── */
+body:not(.admin-body) { background: #f8fafc; }

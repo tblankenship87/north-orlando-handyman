@@ -1,0 +1,25 @@
+{% extends 'admin/base.html' %}
+{% block page_title %}Customers{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>Name</th><th>Phone</th><th>Email</th><th>Jobs</th><th>Since</th><th></th></tr></thead>
+      <tbody>
+        {% for c in customers %}
+        <tr>
+          <td class="fw-semibold">{{ c.name }}</td>
+          <td><a href="tel:{{ c.phone }}">{{ c.phone }}</a></td>
+          <td>{{ c.email }}</td>
+          <td>{{ c.jobs|length }}</td>
+          <td><small class="text-muted">{{ c.created_at.strftime('%m/%d/%y') }}</small></td>
+          <td><a href="{{ url_for('admin_customer_detail', customer_id=c.id) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-5">No customers yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

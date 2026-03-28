@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Request an Estimate — North Orlando Handyman{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm border-0">
+      <div class="card-header text-white" style="background:#1a2744;">
+        <h4 class="mb-0">📋 Request a Free Estimate</h4>
+        <small class="opacity-75">We'll get back to you within the hour</small>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Full Name *</label>
+              <input type="text" name="name" class="form-control" required placeholder="Jane Smith">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Phone Number *</label>
+              <input type="tel" name="phone" class="form-control" required placeholder="(407) 555-0123">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Email Address *</label>
+              <input type="email" name="email" class="form-control" required placeholder="jane@example.com">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Service Address</label>
+              <input type="text" name="address" class="form-control" placeholder="123 Main St, Longwood FL">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Service Needed *</label>
+              <select name="service_type" class="form-select" required>
+                <option value="">— Select a service —</option>
+                {% for s in services %}
+                  <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Preferred Date</label>
+              <input type="date" name="preferred_date" class="form-control">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Tell us about the job *</label>
+              <textarea name="description" class="form-control" rows="4" required
+                placeholder="Describe what you need done. The more detail, the better the estimate."></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">How did you hear about us?</label>
+              <select name="source" class="form-select">
+                <option value="">— Select one —</option>
+                {% for s in sources %}
+                  <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="mt-4 d-grid">
+            <button type="submit" class="btn btn-lg text-white fw-bold" style="background:#f97316;">
+              Send My Request →
+            </button>
+          </div>
+          <p class="text-muted text-center mt-3 small">
+            🔒 We never share your information. One-year workmanship guarantee on all jobs.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

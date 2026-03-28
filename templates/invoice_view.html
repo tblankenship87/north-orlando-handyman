@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Invoice — North Orlando Handyman{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-header text-white" style="background:#1a2744;">
+        <div class="d-flex justify-content-between">
+          <h5 class="mb-0">🧾 Invoice #{{ invoice.id }}</h5>
+          <small>{{ invoice.created_at.strftime('%B %d, %Y') }}</small>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        {% if invoice.quote and invoice.quote.items %}
+          <table class="table table-bordered mb-4">
+            <thead class="table-light">
+              <tr><th>Description</th><th class="text-end">Total</th></tr>
+            </thead>
+            <tbody>
+              {% for item in invoice.quote.items %}
+              <tr><td>{{ item.description }}</td><td class="text-end">${{ '%.2f'|format(item.line_total) }}</td></tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr class="table-dark fw-bold">
+                <td>Amount Due</td>
+                <td class="text-end">${{ '%.2f'|format(invoice.amount) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        {% else %}
+          <div class="text-center py-3">
+            <h4>Amount Due: <strong>${{ '%.2f'|format(invoice.amount) }}</strong></h4>
+          </div>
+        {% endif %}
+
+        {% if invoice.status == 'unpaid' %}
+          <form method="POST">
+            <!-- TODO: Replace with real Stripe payment integration -->
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg fw-bold">💳 Pay Now — ${{ '%.2f'|format(invoice.amount) }}</button>
+            </div>
+          </form>
+          <p class="text-muted text-center mt-2 small">Secure payment. Receipt sent to your email.</p>
+        {% else %}
+          <div class="alert alert-success text-center fw-bold">✅ Paid — Thank you!</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

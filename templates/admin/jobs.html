@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% block page_title %}Jobs{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-light"><tr><th>Customer</th><th>Service</th><th>Date</th><th>Status</th><th>Update</th></tr></thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td class="fw-semibold">{% if job.customer %}{{ job.customer.name }}{% else %}—{% endif %}</td>
+          <td><small>{{ job.service_type or job.title }}</small></td>
+          <td><small>{{ job.scheduled_date or '—' }}</small></td>
+          <td><span class="badge bg-{{ status_colors.get(job.status, 'secondary') }}">{{ job.status }}</span></td>
+          <td>
+            <form method="POST" action="{{ url_for('admin_job_status', job_id=job.id) }}" class="d-flex gap-1">
+              <select name="status" class="form-select form-select-sm" style="width:130px;">
+                {% for s in ['pending','scheduled','in_progress','complete'] %}
+                <option value="{{ s }}" {% if job.status == s %}selected{% endif %}>{{ s.replace('_',' ').title() }}</option>
+                {% endfor %}
+              </select>
+              <button class="btn btn-sm btn-outline-primary">✓</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-muted py-5">No jobs yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
