@@ -247,7 +247,7 @@ FLAT_RATE_SERVICES = [
         "emoji": "🔧",
         "services": [
             {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20220728_031438137-scaled.jpg?resize=400%2C300&ssl=1"},
-            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://i0.wp.com/northorlandohandyman.com/wp-content/uploads/2025/02/PXL_20220728_031438137-scaled.jpg?resize=400%2C300&ssl=1"},
+            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://images.unsplash.com/photo-1563973153236-794eef98609f?w=400&h=300&fit=crop"},
             {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "photo_url": ""},
             {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "photo_url": ""},
         ]
