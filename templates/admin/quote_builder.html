@@ -2,7 +2,11 @@
 {% block page_title %}Build Quote{% endblock %}
 {% block content %}
 
-{% if template_items %}
+{% if edit_quote %}
+<div class="alert alert-warning border-0 mb-3">
+  ✏️ <strong>Editing Quote #{{ edit_quote.id }}</strong> — make your changes and save. Status will reset to Draft so you can resend the updated link.
+</div>
+{% elif template_items %}
 <div class="alert alert-info border-0 mb-3">
   <i class="bi bi-magic"></i> <strong>Suggested line items loaded</strong> for {{ job.service_type }} — adjust quantities and prices to match the actual job.
 </div>
@@ -19,7 +23,7 @@
 <div class="card border-0 shadow-sm">
   <div class="card-header fw-bold">Quote Builder</div>
   <div class="card-body">
-    <form method="POST" action="{{ url_for('admin_quotes') }}">
+    <form method="POST" action="{% if edit_quote %}{{ url_for('admin_quote_update', quote_id=edit_quote.id) }}{% else %}{{ url_for('admin_quotes') }}{% endif %}">
       {% if job %}<input type="hidden" name="job_id" value="{{ job.id }}">{% endif %}
 
       <div class="table-responsive mb-3">

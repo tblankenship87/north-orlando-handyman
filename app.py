@@ -454,6 +454,49 @@ def admin_quote_detail(quote_id):
                            quote_url=quote_url, status_colors=STATUS_COLORS)
 
 
+@app.route('/admin/quotes/<int:quote_id>/edit')
+@admin_required
+def admin_quote_edit(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+    job = Job.query.get(quote.job_id) if quote.job_id else None
+    return render_template('admin/quote_builder.html', job=job,
+                           services=SERVICE_TYPES, template_items=quote.items,
+                           edit_quote=quote)
+
+
+@app.route('/admin/quotes/<int:quote_id>/update', methods=['POST'])
+@admin_required
+def admin_quote_update(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+    # Clear existing items
+    for item in quote.items:
+        db.session.delete(item)
+    db.session.flush()
+
+    subtotal = 0.0
+    descs = request.form.getlist('desc[]')
+    qtys = request.form.getlist('qty[]')
+    prices = request.form.getlist('price[]')
+    for desc, qty, price in zip(descs, qtys, prices):
+        if desc.strip():
+            qty = float(qty or 1)
+            price = float(price or 0)
+            total = qty * price
+            subtotal += total
+            item = QuoteItem(quote_id=quote.id, description=desc,
+                             quantity=qty, unit_price=price, line_total=total)
+            db.session.add(item)
+
+    quote.subtotal = subtotal
+    quote.tax_rate = float(request.form.get('tax_rate', 0) or 0)
+    quote.total = subtotal + (subtotal * quote.tax_rate / 100)
+    quote.notes = request.form.get('notes', '')
+    quote.status = 'draft'  # reset to draft on edit
+    db.session.commit()
+    flash('Quote updated.', 'success')
+    return redirect(url_for('admin_quote_detail', quote_id=quote_id))
+
+
 @app.route('/admin/quotes/<int:quote_id>/send', methods=['POST'])
 @admin_required
 def admin_quote_send(quote_id):
