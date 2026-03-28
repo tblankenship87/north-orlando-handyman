@@ -8,8 +8,9 @@
 html { overscroll-behavior: none; }
 .admin-layout { display: flex; min-height: 100vh; }
 
+/* ── Sidebar (desktop-first, improved) ───────── */
 .admin-sidebar {
-  width: 220px;
+  width: 240px;
   background: var(--navy);
   color: #fff;
   display: flex;
@@ -21,36 +22,59 @@ html { overscroll-behavior: none; }
   z-index: 100;
 }
 .sidebar-brand {
-  padding: 1.25rem 1rem;
-  font-weight: 700;
-  font-size: 1rem;
+  padding: 1.5rem 1.25rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  line-height: 1.3;
 }
-.sidebar-nav { list-style: none; padding: 0.5rem 0; margin: 0; flex: 1; }
+.sidebar-brand small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+.sidebar-nav { list-style: none; padding: 0.75rem 0; margin: 0; flex: 1; }
 .sidebar-nav li a {
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.6rem 1rem;
-  color: rgba(255,255,255,0.75);
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 500;
   transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
 }
-.sidebar-nav li a:hover, .sidebar-nav li a.active {
-  background: rgba(255,255,255,0.1);
+.sidebar-nav li a i { font-size: 1rem; flex-shrink: 0; }
+.sidebar-nav li a:hover {
+  background: rgba(255,255,255,0.08);
   color: #fff;
 }
-.sidebar-nav li a.active { border-left: 3px solid var(--orange); }
+.sidebar-nav li a.active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-left-color: var(--orange);
+}
 .sidebar-nav .mt-auto { margin-top: auto; }
+.sidebar-divider {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 0.5rem 0;
+}
 
-.admin-main { margin-left: 220px; display: flex; flex-direction: column; flex: 1; }
+.admin-main { margin-left: 240px; display: flex; flex-direction: column; flex: 1; }
 .admin-topbar {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
+  padding: 0.85rem 1.75rem;
+  font-size: 1.15rem;
+  font-weight: 600;
   position: sticky; top: 0; z-index: 50;
 }
-.admin-content { padding: 1.5rem; flex: 1; }
+.admin-content { padding: 1.75rem; flex: 1; }
 
 /* ── Stat Cards ───────────────────────────────── */
 .stat-card {
@@ -65,16 +89,53 @@ html { overscroll-behavior: none; }
 .stat-num { font-size: 2rem; font-weight: 700; color: #1a2744; line-height: 1; }
 .stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
 
+/* ── Quick Actions panel ──────────────────────── */
+.quick-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.quick-actions .btn { flex: 1; min-width: 120px; font-weight: 600; }
+.booking-link-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  word-break: break-all;
+  color: var(--navy);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.booking-link-box:hover { background: #f0f4f8; }
+
+/* ── Leads table — desktop extras ────────────── */
+.lead-phone-col { white-space: nowrap; }
+.btn-xs { font-size: 0.75rem; padding: 0.2rem 0.5rem; }
+
+/* ── Quote builder — desktop column widths ───── */
+@media (min-width: 769px) {
+  #items-table { table-layout: fixed; }
+  #items-table th:first-child,
+  #items-table td:first-child { width: auto; }
+  #items-table th:nth-child(2), #items-table td:nth-child(2) { width: 90px; }
+  #items-table th:nth-child(3), #items-table td:nth-child(3) { width: 130px; }
+  #items-table th:nth-child(4), #items-table td:nth-child(4) { width: 110px; }
+  #items-table th:nth-child(5), #items-table td:nth-child(5) { width: 50px; }
+}
+
 /* ── Mobile ───────────────────────────────────── */
 @media (max-width: 768px) {
   .admin-sidebar { width: 100%; position: relative; height: auto; }
   .admin-main { margin-left: 0; }
   .admin-layout { flex-direction: column; }
   .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0.25rem; }
-  .sidebar-nav li a { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  .sidebar-nav li a { padding: 0.4rem 0.6rem; font-size: 0.8rem; border-left: none; border-bottom: 2px solid transparent; }
+  .sidebar-nav li a.active { border-left: none; border-bottom-color: var(--orange); }
+  .sidebar-brand small { display: none; }
+  .admin-content { padding: 1rem; }
+  .admin-topbar { padding: 0.6rem 1rem; font-size: 1rem; }
   /* Quote builder — compress columns on mobile to avoid horizontal scroll */
   #items-table th[style], #items-table td { width: auto !important; }
   #items-table .form-control-sm { font-size: 0.75rem; padding: 0.2rem 0.3rem; }
+  /* Hide phone col on very small screens */
+  .lead-phone-col { display: none; }
 }
 
 /* ── Public form ──────────────────────────────── */

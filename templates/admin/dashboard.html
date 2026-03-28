@@ -34,27 +34,38 @@
 </div>
 
 <div class="row g-4">
-  <div class="col-lg-7">
-    <div class="card border-0 shadow-sm">
-      <div class="card-header fw-bold d-flex justify-content-between">
+  <!-- Recent Leads -->
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header fw-bold d-flex justify-content-between align-items-center">
         Recent Leads
         <a href="{{ url_for('admin_leads') }}" class="btn btn-sm btn-outline-primary">View All</a>
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
-            <thead class="table-light"><tr><th>Name</th><th>Service</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <thead class="table-light">
+              <tr>
+                <th>Name</th>
+                <th class="lead-phone-col">Phone</th>
+                <th>Service</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
               {% for lead in recent_leads %}
               <tr>
                 <td class="fw-semibold">{{ lead.name }}</td>
+                <td class="lead-phone-col"><a href="tel:{{ lead.phone }}" class="text-decoration-none text-muted small">{{ lead.phone }}</a></td>
                 <td><small>{{ lead.service_type }}</small></td>
                 <td><span class="badge bg-{{ status_colors.get(lead.status, 'secondary') }}">{{ lead.status }}</span></td>
                 <td><small class="text-muted">{{ lead.created_at.strftime('%m/%d') }}</small></td>
                 <td><a href="{{ url_for('admin_lead_detail', lead_id=lead.id) }}" class="btn btn-xs btn-outline-secondary btn-sm">View</a></td>
               </tr>
               {% else %}
-              <tr><td colspan="5" class="text-center text-muted py-4">No leads yet — share your booking link!</td></tr>
+              <tr><td colspan="6" class="text-center text-muted py-4">No leads yet — share your booking link!</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -63,9 +74,46 @@
     </div>
   </div>
 
-  <div class="col-lg-5">
+  <!-- Right column -->
+  <div class="col-lg-4 d-flex flex-column gap-3">
+
+    <!-- Quick Actions -->
     <div class="card border-0 shadow-sm">
-      <div class="card-header fw-bold d-flex justify-content-between">
+      <div class="card-header fw-bold">⚡ Quick Actions</div>
+      <div class="card-body">
+        <div class="quick-actions mb-3">
+          <a href="{{ url_for('admin_leads') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-person-plus me-1"></i> Leads
+          </a>
+          <a href="{{ url_for('admin_quotes') }}" class="btn btn-outline-info btn-sm">
+            <i class="bi bi-file-earmark-text me-1"></i> Quotes
+          </a>
+          <a href="{{ url_for('admin_jobs') }}" class="btn btn-outline-warning btn-sm">
+            <i class="bi bi-hammer me-1"></i> Jobs
+          </a>
+          <a href="{{ url_for('admin_invoices') }}" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-receipt me-1"></i> Invoices
+          </a>
+        </div>
+        <p class="text-muted small mb-1 fw-semibold">📋 Customer Booking Link</p>
+        <div class="booking-link-box" id="booking-link" onclick="copyBookingLink()" title="Click to copy">
+          {{ request.host_url }}request
+        </div>
+        <div class="mt-2 d-flex gap-2">
+          <button onclick="copyBookingLink()" class="btn btn-sm btn-outline-secondary flex-grow-1">
+            <i class="bi bi-clipboard me-1"></i> Copy Link
+          </button>
+          <a href="{{ url_for('request_form') }}" target="_blank" class="btn btn-sm text-white flex-grow-1" style="background:var(--orange);">
+            Open ↗
+          </a>
+        </div>
+        <div id="copy-confirm" class="text-success small mt-1" style="display:none;">✅ Copied to clipboard!</div>
+      </div>
+    </div>
+
+    <!-- Open Jobs -->
+    <div class="card border-0 shadow-sm flex-grow-1">
+      <div class="card-header fw-bold d-flex justify-content-between align-items-center">
         Open Jobs
         <a href="{{ url_for('admin_jobs') }}" class="btn btn-sm btn-outline-primary">View All</a>
       </div>
@@ -76,12 +124,12 @@
             <tbody>
               {% for job in upcoming_jobs %}
               <tr>
-                <td class="fw-semibold">{% if job.customer %}{{ job.customer.name }}{% else %}—{% endif %}</td>
-                <td><small>{{ job.service_type or job.title }}</small></td>
+                <td class="fw-semibold small">{% if job.customer %}{{ job.customer.name }}{% else %}—{% endif %}</td>
+                <td><small class="text-muted">{{ job.service_type or job.title }}</small></td>
                 <td><span class="badge bg-{{ status_colors.get(job.status, 'secondary') }}">{{ job.status }}</span></td>
               </tr>
               {% else %}
-              <tr><td colspan="3" class="text-center text-muted py-4">No open jobs</td></tr>
+              <tr><td colspan="3" class="text-center text-muted py-3 small">No open jobs</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -89,15 +137,19 @@
       </div>
     </div>
 
-    <div class="card border-0 shadow-sm mt-3">
-      <div class="card-body text-center">
-        <p class="text-muted small mb-2">Your booking link:</p>
-        <code class="small">{{ request.host_url }}request</code>
-        <div class="mt-2">
-          <a href="{{ url_for('request_form') }}" target="_blank" class="btn btn-sm text-white" style="background:#f97316;">Open Form ↗</a>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function copyBookingLink() {
+  const url = document.getElementById('booking-link').textContent.trim();
+  navigator.clipboard.writeText(url).then(() => {
+    const el = document.getElementById('copy-confirm');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  });
+}
+</script>
 {% endblock %}
