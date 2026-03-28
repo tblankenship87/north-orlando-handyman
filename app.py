@@ -515,8 +515,27 @@ def admin_job_status(job_id):
 
 # ── Startup ──────────────────────────────────────────────────────────────────
 
+def run_migrations():
+    """Add missing columns to existing tables without losing data."""
+    from sqlalchemy import text, inspect
+    with db.engine.connect() as conn:
+        inspector = inspect(db.engine)
+        # Migrate lead table
+        lead_cols = [c['name'] for c in inspector.get_columns('lead')] if 'lead' in inspector.get_table_names() else []
+        migrations = [
+            ('lead', 'photo_filename', 'VARCHAR(200)'),
+            ('lead', 'photo_data',     'TEXT'),
+            ('lead', 'photo_mime',     'VARCHAR(50)'),
+        ]
+        for table, col, col_type in migrations:
+            if table in inspector.get_table_names() and col not in lead_cols:
+                conn.execute(text(f'ALTER TABLE {table} ADD COLUMN {col} {col_type}'))
+                print(f'Migration: added {table}.{col}')
+        conn.commit()
+
 with app.app_context():
     db.create_all()
+    run_migrations()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
