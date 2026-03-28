@@ -72,6 +72,9 @@ html { overscroll-behavior: none; }
   .admin-layout { flex-direction: column; }
   .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0.25rem; }
   .sidebar-nav li a { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  /* Quote builder — compress columns on mobile to avoid horizontal scroll */
+  #items-table th[style], #items-table td { width: auto !important; }
+  #items-table .form-control-sm { font-size: 0.75rem; padding: 0.2rem 0.3rem; }
 }
 
 /* ── Public form ──────────────────────────────── */

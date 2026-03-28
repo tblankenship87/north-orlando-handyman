@@ -26,7 +26,7 @@
     <form method="POST" action="{% if edit_quote %}{{ url_for('admin_quote_update', quote_id=edit_quote.id) }}{% else %}{{ url_for('admin_quotes') }}{% endif %}">
       {% if job %}<input type="hidden" name="job_id" value="{{ job.id }}">{% endif %}
 
-      <div class="table-responsive mb-3">
+      <div class="table-responsive mb-3" style="overscroll-behavior: contain; -webkit-overflow-scrolling: touch;">
         <table class="table border" id="items-table">
           <thead class="table-light">
             <tr>
