@@ -25,7 +25,25 @@
       </div>
     </div>
 
-    {% if lead.photo_data %}
+    {% if lead_photos %}
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-header fw-bold">📷 Customer Photos ({{ lead_photos | length }})</div>
+      <div class="card-body p-2">
+        <div class="row g-2">
+          {% for p in lead_photos %}
+          <div class="col-6 col-md-4">
+            <a href="data:{{ p.mime }};base64,{{ p.data }}" target="_blank">
+              <img src="data:{{ p.mime }};base64,{{ p.data }}"
+                   class="img-fluid rounded" style="height:160px;width:100%;object-fit:cover;"
+                   alt="Photo {{ loop.index }}">
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        <p class="text-muted small mt-2 mb-0">Click any photo to view full size</p>
+      </div>
+    </div>
+    {% elif lead.photo_data %}
     <div class="card border-0 shadow-sm mt-3">
       <div class="card-header fw-bold">📷 Customer Photo</div>
       <div class="card-body p-2">

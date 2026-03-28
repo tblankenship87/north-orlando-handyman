@@ -1,6 +1,7 @@
 import os
 import uuid
 import base64
+import json
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
@@ -125,6 +126,8 @@ class Lead(db.Model):
     photo_filename = db.Column(db.String(200))  # kept for reference
     photo_data = db.Column(db.Text)             # base64 encoded image stored in DB
     photo_mime = db.Column(db.String(50))       # e.g. image/jpeg
+    photos_json = db.Column(db.Text)            # JSON array of {data, mime, filename} for multiple photos
+    tier = db.Column(db.String(10))             # '1' = flat-rate booking, '' = custom quote
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     quotes = db.relationship('Quote', backref='lead', lazy=True)
 
@@ -220,40 +223,40 @@ FLAT_RATE_SERVICES = [
         "category": "Bathroom",
         "emoji": "🚿",
         "services": [
-            {"name": "Bathroom Fan Replacement", "service_type": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175},
-            {"name": "Faucet or Shower Repair", "service_type": "Faucet and Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125},
-            {"name": "Caulk & Grout Refresh", "service_type": "Caulk and Grout", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150},
-            {"name": "Toilet Repair or Replace", "service_type": "Bathroom Fixtures", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110},
+            {"name": "Bathroom Fan Replacement", "service_type": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175, "photo_url": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&h=250&fit=crop"},
+            {"name": "Faucet or Shower Repair", "service_type": "Faucet and Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
+            {"name": "Caulk & Grout Refresh", "service_type": "Caulk and Grout", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150, "photo_url": "https://images.unsplash.com/photo-1620626011761-996317702149?w=400&h=250&fit=crop"},
+            {"name": "Toilet Repair or Replace", "service_type": "Bathroom Fixtures", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://images.unsplash.com/photo-1564540574859-0dfb63985953?w=400&h=250&fit=crop"},
         ]
     },
     {
         "category": "Kitchen",
         "emoji": "🍳",
         "services": [
-            {"name": "Dishwasher Installation", "service_type": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200},
-            {"name": "Kitchen Faucet Replacement", "service_type": "Faucet and Shower Repair", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125},
-            {"name": "Cabinet Hardware Upgrade", "service_type": "Cabinet Upgrades", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95},
-            {"name": "Under-Sink Reverse Osmosis Install", "service_type": "Reverse Osmosis Water Installation", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200},
+            {"name": "Dishwasher Installation", "service_type": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200, "photo_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop"},
+            {"name": "Kitchen Faucet Replacement", "service_type": "Faucet and Shower Repair", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125, "photo_url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=250&fit=crop"},
+            {"name": "Cabinet Hardware Upgrade", "service_type": "Cabinet Upgrades", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&h=250&fit=crop"},
+            {"name": "Under-Sink Reverse Osmosis Install", "service_type": "Reverse Osmosis Water Installation", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
         ]
     },
     {
         "category": "General & Electrical",
         "emoji": "🔧",
         "services": [
-            {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130},
-            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110},
-            {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95},
-            {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85},
+            {"name": "Ceiling Fan Installation", "service_type": "Lighting and Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "photo_url": "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=400&h=250&fit=crop"},
+            {"name": "Light Fixture Replacement", "service_type": "Lighting and Fan Installation", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "photo_url": "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=400&h=250&fit=crop"},
+            {"name": "Doorbell Installation", "service_type": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "photo_url": "https://images.unsplash.com/photo-1558002038-bb4237bb1bef?w=400&h=250&fit=crop"},
+            {"name": "Smoke & CO2 Detector Replacement", "service_type": "Smoke / CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "photo_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=250&fit=crop"},
         ]
     },
     {
         "category": "Doors, Walls & Assembly",
         "emoji": "🚪",
         "services": [
-            {"name": "Door Adjustment or Repair", "service_type": "Door Adjustments", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95},
-            {"name": "Furniture Assembly", "service_type": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95},
-            {"name": "Shelf & TV Mount Installation", "service_type": "Shelf and Picture Hanging", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95},
-            {"name": "Wall Repair / Drywall Patch", "service_type": "Wall Repair / Drywall", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120},
+            {"name": "Door Adjustment or Repair", "service_type": "Door Adjustments", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95, "photo_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop"},
+            {"name": "Furniture Assembly", "service_type": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=250&fit=crop"},
+            {"name": "Shelf & TV Mount Installation", "service_type": "Shelf and Picture Hanging", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95, "photo_url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=250&fit=crop"},
+            {"name": "Wall Repair / Drywall Patch", "service_type": "Wall Repair / Drywall", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120, "photo_url": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=250&fit=crop"},
         ]
     },
 ]
@@ -274,15 +277,22 @@ def services_redirect():
 @app.route('/request', methods=['GET', 'POST'])
 def request_form():
     if request.method == 'POST':
+        # Handle multiple photo uploads (up to 5)
+        photos = []
         photo_data = None
         photo_mime = None
         photo_filename = None
-        file = request.files.get('photo')
-        if file and file.filename and allowed_file(file.filename):
-            mime = file.content_type or 'image/jpeg'
-            photo_data = base64.b64encode(file.read()).decode('utf-8')
-            photo_mime = mime
-            photo_filename = secure_filename(file.filename)
+        files = request.files.getlist('photos')
+        for file in files[:5]:
+            if file and file.filename and allowed_file(file.filename):
+                mime = file.content_type or 'image/jpeg'
+                data = base64.b64encode(file.read()).decode('utf-8')
+                fname = secure_filename(file.filename)
+                photos.append({'data': data, 'mime': mime, 'filename': fname})
+                if not photo_data:
+                    photo_data = data
+                    photo_mime = mime
+                    photo_filename = fname
 
         lead = Lead(
             name=request.form['name'],
@@ -293,15 +303,17 @@ def request_form():
             preferred_date=request.form.get('preferred_date', ''),
             description=request.form['description'],
             source=request.form.get('source', ''),
+            tier=request.form.get('tier', ''),
             photo_filename=photo_filename,
             photo_data=photo_data,
             photo_mime=photo_mime,
+            photos_json=json.dumps(photos) if photos else None,
         )
         db.session.add(lead)
         db.session.commit()
 
-        # TODO: Replace with real email/SMS notification
         print(f"\n🔔 NEW LEAD: {lead.name} | {lead.phone} | {lead.service_type}\n")
+        fire_n8n_webhook(lead)
 
         return redirect(url_for('request_thanks'))
     prefill_service = request.args.get('service', '')
@@ -415,8 +427,10 @@ def admin_lead_detail(lead_id):
         return redirect(url_for('admin_lead_detail', lead_id=lead_id))
     statuses = ['new', 'contacted', 'quoted', 'booked', 'complete', 'lost']
     existing_quote = Quote.query.filter_by(lead_id=lead_id).first()
+    lead_photos = json.loads(lead.photos_json) if lead.photos_json else []
     return render_template('admin/lead_detail.html', lead=lead, statuses=statuses,
-                           existing_quote=existing_quote, status_colors=STATUS_COLORS)
+                           existing_quote=existing_quote, status_colors=STATUS_COLORS,
+                           lead_photos=lead_photos)
 
 
 @app.route('/admin/leads/<int:lead_id>/convert', methods=['POST'])
@@ -631,17 +645,48 @@ def admin_job_status(job_id):
 
 # ── Startup ──────────────────────────────────────────────────────────────────
 
+def fire_n8n_webhook(lead):
+    """Fire n8n webhook in background thread — non-blocking."""
+    url = os.getenv('N8N_WEBHOOK_URL', '')
+    if not url:
+        return
+    import threading, requests as req_lib
+    def _send():
+        try:
+            payload = {
+                'id': lead.id,
+                'name': lead.name,
+                'phone': lead.phone,
+                'email': lead.email,
+                'address': lead.address,
+                'service_type': lead.service_type,
+                'description': lead.description,
+                'preferred_date': lead.preferred_date,
+                'source': lead.source,
+                'tier': lead.tier or '',
+                'photo_count': len(json.loads(lead.photos_json)) if lead.photos_json else (1 if lead.photo_data else 0),
+                'submitted_at': lead.created_at.isoformat(),
+                'admin_url': f"{os.getenv('RENDER_EXTERNAL_URL', '')}/admin/leads/{lead.id}",
+            }
+            req_lib.post(url, json=payload, timeout=10)
+            print(f"n8n webhook fired for lead {lead.id}")
+        except Exception as e:
+            print(f"n8n webhook failed (non-fatal): {e}")
+    threading.Thread(target=_send, daemon=True).start()
+
+
 def run_migrations():
     """Add missing columns to existing tables without losing data."""
     from sqlalchemy import text, inspect
     with db.engine.connect() as conn:
         inspector = inspect(db.engine)
-        # Migrate lead table
         lead_cols = [c['name'] for c in inspector.get_columns('lead')] if 'lead' in inspector.get_table_names() else []
         migrations = [
             ('lead', 'photo_filename', 'VARCHAR(200)'),
             ('lead', 'photo_data',     'TEXT'),
             ('lead', 'photo_mime',     'VARCHAR(50)'),
+            ('lead', 'photos_json',    'TEXT'),
+            ('lead', 'tier',           'VARCHAR(10)'),
         ]
         for table, col, col_type in migrations:
             if table in inspector.get_table_names() and col not in lead_cols:

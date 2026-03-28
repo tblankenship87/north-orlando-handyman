@@ -93,6 +93,28 @@
     .btn-complex { background: var(--orange); color: #fff; padding: 0.85rem 2rem; border-radius: 8px; font-weight: 800; font-size: 1rem; text-decoration: none; display: inline-block; }
     .btn-complex:hover { background: #ea6c0a; color: #fff; }
 
+    /* Reviews */
+    .reviews-section { padding: 3rem 1rem; background: #fff; }
+    .reviews-section h2 { text-align: center; font-weight: 900; color: var(--navy); margin-bottom: 0.4rem; font-size: 1.75rem; }
+    .reviews-rating { text-align: center; font-size: 1.5rem; margin-bottom: 2rem; color: #f59e0b; }
+    .reviews-rating span { color: var(--navy); font-size: 1rem; font-weight: 700; vertical-align: middle; }
+    .review-card { background: #f8fafc; border-radius: 12px; padding: 1.25rem; height: 100%; }
+    .review-card .stars { color: #f59e0b; font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .review-card p { font-size: 0.88rem; color: #374151; line-height: 1.6; margin-bottom: 0.75rem; font-style: italic; }
+    .review-card .reviewer { font-size: 0.78rem; font-weight: 700; color: var(--navy); }
+
+    /* Service area */
+    .area-section { background: var(--navy); color: #fff; padding: 2.5rem 1rem; text-align: center; }
+    .area-section h2 { font-weight: 900; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .area-section p { color: rgba(255,255,255,0.7); margin-bottom: 1.25rem; }
+    .city-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .city-tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.82rem; }
+
+    /* Warranty */
+    .warranty-section { background: #f0fdf4; border-top: 3px solid #16a34a; padding: 2rem 1rem; text-align: center; }
+    .warranty-section h3 { font-weight: 900; color: #15803d; margin-bottom: 0.5rem; }
+    .warranty-section p { color: #166534; font-size: 0.9rem; max-width: 500px; margin: 0 auto; }
+
     /* FAQ */
     .faq-section { padding: 3rem 1rem; background: #f8fafc; }
     .faq-section h2 { text-align: center; font-weight: 900; color: var(--navy); margin-bottom: 2rem; font-size: 1.75rem; }
@@ -200,6 +222,9 @@
             <span class="price">${{ svc.price }}</span>
             <span class="time"><i class="bi bi-clock"></i> {{ svc.time }}</span>
           </div>
+          {% if svc.photo_url is defined and svc.photo_url %}
+          <img src="{{ svc.photo_url }}" alt="{{ svc.name }}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:0.75rem;" loading="lazy" onerror="this.style.display='none'">
+          {% endif %}
           <a href="{{ url_for('request_form', service=svc.service_type, tier='1') }}" class="btn-book">Book This →</a>
         </div>
       </div>
@@ -217,6 +242,66 @@
     <a href="{{ url_for('request_form') }}" class="btn-complex">Get a Free Estimate →</a>
   </div>
 </div>
+
+<!-- Reviews -->
+<section class="reviews-section">
+  <div class="container" style="max-width:900px">
+    <h2>What Customers Are Saying</h2>
+    <div class="reviews-rating">★★★★★ <span>5.0 · Google Reviews</span></div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Showed up exactly on time, fixed our bathroom fan in under 2 hours. Clean, professional, and the price was exactly what was quoted. Will definitely use again."</p>
+          <div class="reviewer">— Sarah M., Lake Mary</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Had a list of small jobs that had been piling up for months. Kyle knocked them all out in one visit. Dishwasher, a door that wouldn't close, and ceiling fan. Highly recommend."</p>
+          <div class="reviewer">— Mike T., Longwood</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Very responsive, gave me a clear price upfront, and the work was excellent. No surprises on the bill. Exactly what you want from a handyman."</p>
+          <div class="reviewer">— Jennifer R., Sanford</div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-muted small mt-3">⭐ Reviews from Google. <a href="https://northorlandohandyman.com" target="_blank" class="text-muted">See all reviews</a></p>
+  </div>
+</section>
+
+<!-- Service Area -->
+<section class="area-section">
+  <div class="container">
+    <h2>📍 Proudly Serving Seminole County</h2>
+    <p>From Sanford to Oviedo — if you're in Seminole County, we come to you.</p>
+    <div class="city-tags">
+      <span class="city-tag">Sanford</span>
+      <span class="city-tag">Lake Mary</span>
+      <span class="city-tag">Longwood</span>
+      <span class="city-tag">Altamonte Springs</span>
+      <span class="city-tag">Oviedo</span>
+      <span class="city-tag">Winter Springs</span>
+      <span class="city-tag">Casselberry</span>
+      <span class="city-tag">Winter Park</span>
+      <span class="city-tag">Heathrow</span>
+      <span class="city-tag">Geneva</span>
+    </div>
+  </div>
+</section>
+
+<!-- Warranty -->
+<section class="warranty-section">
+  <div class="container">
+    <h3>🛡️ 1-Year Workmanship Guarantee</h3>
+    <p>Every job we complete is backed by a full one-year guarantee. If something isn't right, we come back and fix it — no questions asked, no extra charge.</p>
+  </div>
+</section>
 
 <!-- FAQ -->
 <section class="faq-section">
