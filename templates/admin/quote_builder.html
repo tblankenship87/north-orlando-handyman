@@ -104,6 +104,7 @@ function calcTotals() {
   document.getElementById('grand-total').textContent = '$' + grand.toFixed(2);
 }
 document.addEventListener('input', calcTotals);
+document.addEventListener('DOMContentLoaded', calcTotals);
 document.getElementById('add-row').addEventListener('click', function() {
   const tbody = document.getElementById('line-items');
   const row = tbody.querySelector('.line-item').cloneNode(true);
