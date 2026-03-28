@@ -1,5 +1,6 @@
 import os
 import uuid
+import base64
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
@@ -69,7 +70,9 @@ class Lead(db.Model):
     source = db.Column(db.String(50))
     status = db.Column(db.String(30), default='new')  # new/contacted/quoted/booked/complete/lost
     notes = db.Column(db.Text)
-    photo_filename = db.Column(db.String(200))
+    photo_filename = db.Column(db.String(200))  # kept for reference
+    photo_data = db.Column(db.Text)             # base64 encoded image stored in DB
+    photo_mime = db.Column(db.String(50))       # e.g. image/jpeg
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     quotes = db.relationship('Quote', backref='lead', lazy=True)
 
@@ -168,12 +171,15 @@ def index():
 @app.route('/request', methods=['GET', 'POST'])
 def request_form():
     if request.method == 'POST':
+        photo_data = None
+        photo_mime = None
         photo_filename = None
         file = request.files.get('photo')
         if file and file.filename and allowed_file(file.filename):
-            ext = file.filename.rsplit('.', 1)[1].lower()
-            photo_filename = f"{uuid.uuid4().hex}.{ext}"
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+            mime = file.content_type or 'image/jpeg'
+            photo_data = base64.b64encode(file.read()).decode('utf-8')
+            photo_mime = mime
+            photo_filename = secure_filename(file.filename)
 
         lead = Lead(
             name=request.form['name'],
@@ -185,6 +191,8 @@ def request_form():
             description=request.form['description'],
             source=request.form.get('source', ''),
             photo_filename=photo_filename,
+            photo_data=photo_data,
+            photo_mime=photo_mime,
         )
         db.session.add(lead)
         db.session.commit()
