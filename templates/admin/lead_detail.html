@@ -13,6 +13,9 @@
         {% if lead.address %}<p><strong>Address:</strong> {{ lead.address }}</p>{% endif %}
         <p><strong>Service:</strong> {{ lead.service_type }}</p>
         {% if lead.preferred_date %}<p><strong>Preferred Date:</strong> {{ lead.preferred_date }}</p>{% endif %}
+        {% if lead.urgency %}<p><strong>Timing:</strong> {{ {'asap':'As soon as possible','2weeks':'Within 2 weeks','2months':'Within 2 months','flexible':'Flexible'}[lead.urgency] or lead.urgency }}</p>{% endif %}
+        {% if lead.building_type %}<p><strong>Building Type:</strong> {{ lead.building_type }}</p>{% endif %}
+        {% if lead.materials %}<p><strong>Materials:</strong> {{ {'have':'Already has materials','will_buy':'Will purchase before job','need_help':'Wants us to source','not_needed':'No materials needed'}[lead.materials] or lead.materials }}</p>{% endif %}
         {% if lead.source %}<p><strong>Source:</strong> {{ lead.source }}</p>{% endif %}
         <p><strong>Received:</strong> {{ lead.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
       </div>

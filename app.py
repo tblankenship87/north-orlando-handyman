@@ -106,7 +106,7 @@ SERVICE_TYPES = [
     'General Repairs / Other',
 ]
 
-LEAD_SOURCES = ['Google', 'Referral', 'Facebook', 'Nextdoor', 'Door Hanger', 'Other']
+LEAD_SOURCES = ['Google Search', 'Referral', 'Repeat Client', 'Facebook Recommendation', 'Facebook Ad', 'Yelp', 'Nextdoor', 'Physical Sign', 'Other']
 
 
 # ── Models ──────────────────────────────────────────────────────────────────
@@ -128,6 +128,9 @@ class Lead(db.Model):
     photo_mime = db.Column(db.String(50))       # e.g. image/jpeg
     photos_json = db.Column(db.Text)            # JSON array of {data, mime, filename} for multiple photos
     tier = db.Column(db.String(10))             # '1' = flat-rate booking, '' = custom quote
+    urgency = db.Column(db.String(30))          # asap / 2weeks / 2months / flexible
+    building_type = db.Column(db.String(50))    # Single Family / Condo / Apartment / Commercial / Other
+    materials = db.Column(db.String(50))        # have / will_buy / need_help / not_needed
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     quotes = db.relationship('Quote', backref='lead', lazy=True)
 
@@ -304,6 +307,9 @@ def request_form():
             description=request.form['description'],
             source=request.form.get('source', ''),
             tier=request.form.get('tier', ''),
+            urgency=request.form.get('urgency', ''),
+            building_type=request.form.get('building_type', ''),
+            materials=request.form.get('materials', ''),
             photo_filename=photo_filename,
             photo_data=photo_data,
             photo_mime=photo_mime,
@@ -664,6 +670,9 @@ def fire_n8n_webhook(lead):
                 'preferred_date': lead.preferred_date,
                 'source': lead.source,
                 'tier': lead.tier or '',
+                'urgency': lead.urgency or '',
+                'building_type': lead.building_type or '',
+                'materials': lead.materials or '',
                 'photo_count': len(json.loads(lead.photos_json)) if lead.photos_json else (1 if lead.photo_data else 0),
                 'submitted_at': lead.created_at.isoformat(),
                 'admin_url': f"{os.getenv('RENDER_EXTERNAL_URL', '')}/admin/leads/{lead.id}",
@@ -687,6 +696,9 @@ def run_migrations():
             ('lead', 'photo_mime',     'VARCHAR(50)'),
             ('lead', 'photos_json',    'TEXT'),
             ('lead', 'tier',           'VARCHAR(10)'),
+            ('lead', 'urgency',        'VARCHAR(30)'),
+            ('lead', 'building_type',  'VARCHAR(50)'),
+            ('lead', 'materials',      'VARCHAR(50)'),
         ]
         for table, col, col_type in migrations:
             if table in inspector.get_table_names() and col not in lead_cols:
