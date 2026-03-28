@@ -9,7 +9,7 @@
         <small class="opacity-75">We'll get back to you within the hour</small>
       </div>
       <div class="card-body p-4">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label fw-semibold">Full Name *</label>
@@ -44,6 +44,11 @@
               <label class="form-label fw-semibold">Tell us about the job *</label>
               <textarea name="description" class="form-control" rows="4" required
                 placeholder="Describe what you need done. The more detail, the better the estimate."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Add a Photo <span class="text-muted fw-normal">(optional — helps Kyle give a better estimate)</span></label>
+              <input type="file" name="photo" class="form-control" accept="image/*" capture="environment">
+              <div class="form-text">Take a photo of the problem area or upload from your camera roll. JPG, PNG up to 16MB.</div>
             </div>
             <div class="col-md-6">
               <label class="form-label fw-semibold">How did you hear about us?</label>

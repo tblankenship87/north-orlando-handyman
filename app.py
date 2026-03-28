@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 
@@ -8,6 +9,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-change-in-production')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///handyman.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'heic', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 db = SQLAlchemy(app)
 
@@ -60,6 +69,7 @@ class Lead(db.Model):
     source = db.Column(db.String(50))
     status = db.Column(db.String(30), default='new')  # new/contacted/quoted/booked/complete/lost
     notes = db.Column(db.Text)
+    photo_filename = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     quotes = db.relationship('Quote', backref='lead', lazy=True)
 
@@ -158,6 +168,13 @@ def index():
 @app.route('/request', methods=['GET', 'POST'])
 def request_form():
     if request.method == 'POST':
+        photo_filename = None
+        file = request.files.get('photo')
+        if file and file.filename and allowed_file(file.filename):
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            photo_filename = f"{uuid.uuid4().hex}.{ext}"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+
         lead = Lead(
             name=request.form['name'],
             phone=request.form['phone'],
@@ -167,6 +184,7 @@ def request_form():
             preferred_date=request.form.get('preferred_date', ''),
             description=request.form['description'],
             source=request.form.get('source', ''),
+            photo_filename=photo_filename,
         )
         db.session.add(lead)
         db.session.commit()

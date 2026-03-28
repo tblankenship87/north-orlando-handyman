@@ -25,6 +25,20 @@
       </div>
     </div>
 
+    {% if lead.photo_filename %}
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-header fw-bold">📷 Customer Photo</div>
+      <div class="card-body p-2">
+        <a href="{{ url_for('static', filename='uploads/' + lead.photo_filename) }}" target="_blank">
+          <img src="{{ url_for('static', filename='uploads/' + lead.photo_filename) }}"
+               class="img-fluid rounded" style="max-height:400px;width:100%;object-fit:cover;"
+               alt="Job photo">
+        </a>
+        <p class="text-muted small mt-1 mb-0">Click to view full size</p>
+      </div>
+    </div>
+    {% endif %}
+
     {% if existing_quote %}
     <div class="card border-0 shadow-sm mt-3 border-info">
       <div class="card-body text-center">
