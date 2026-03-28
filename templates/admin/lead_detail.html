@@ -27,7 +27,7 @@
 
     {% if lead_photos %}
     <div class="card border-0 shadow-sm mt-3">
-      <div class="card-header fw-bold">📷 Customer Photos ({{ lead_photos | length }})</div>
+      <div class="card-header fw-bold">Customer Photos ({{ lead_photos | length }})</div>
       <div class="card-body p-2">
         <div class="row g-2">
           {% for p in lead_photos %}
@@ -45,7 +45,7 @@
     </div>
     {% elif lead.photo_data %}
     <div class="card border-0 shadow-sm mt-3">
-      <div class="card-header fw-bold">📷 Customer Photo</div>
+      <div class="card-header fw-bold">Customer Photo</div>
       <div class="card-body p-2">
         <a href="data:{{ lead.photo_mime }};base64,{{ lead.photo_data }}" target="_blank">
           <img src="data:{{ lead.photo_mime }};base64,{{ lead.photo_data }}"
