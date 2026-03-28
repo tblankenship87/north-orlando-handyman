@@ -1,191 +1,200 @@
 # North Orlando Handyman — System Handoff Guide
 
-*Built by Waypoint Systems | Last updated: 2026-03-28*
+*Built by Waypoint Systems (Tyler Blankenship + Atlas AI) | Last updated: 2026-03-28*
+
+---
+
+## Live URL
+
+**`north-orlando-handyman.onrender.com`**
+
+Admin login: `admin` / `handyman2026` *(change this before going live — see Step 1)*
 
 ---
 
 ## What's Built and Working Right Now
 
-This is a custom CRM and lead management system built specifically for your business. Here's what's live today:
+### Customer-Facing Pages
 
-**Customer-facing:**
-- Lead capture form at `/request` — mobile-friendly, photo upload, all your service types
-- Quote approval page — customer gets a link, taps Approve or Decline
-- Invoice and mock payment page (payment integration pending)
+**`/book`** — Public booking page (this is your homepage)
+- Hero with two clear paths: flat-rate booking or custom estimate
+- 16 flat-rate services organized by category (Bathroom, Kitchen, Electrical, Doors/Walls)
+- Each service card has photo, description, time estimate, and flat price
+- "Book This →" pre-fills the request form for that specific service
+- How It Works (4 steps)
+- Customer reviews section (3 placeholder reviews — replace with your real Google reviews)
+- Service area section (Seminole County cities)
+- 1-Year Workmanship Guarantee section
+- FAQ
+- "Got a bigger project?" banner linking to estimate form
 
-**Admin (you):**
-- Dashboard with stat cards — new leads, open jobs, pending quotes, revenue
-- Lead management — view, add notes, update status, convert to quote
-- Quote builder — pre-loaded with suggested line items per service type (French Drain, Sprinkler, Faucet, etc.)
-- Customer and job history
-- Invoice management
+**`/request`** — Lead capture / estimate request form
+- Works for both flat-rate bookings and custom quote requests
+- Flat-rate bookings show a "Flat-Rate Booking" banner with the confirmed price
+- Upload up to 5 photos (stored in database, no external storage needed)
+- Mobile-friendly, works on iPhone and Android
 
-**Infrastructure:**
-- Hosted on Render Starter plan ($7/month) — never spins down
-- Persistent disk at `/data` ($0.25/month) — data survives every deploy
-- GitHub repo at github.com/tblankenship87/north-orlando-handyman (public — you can fork it)
-- Auto-deploys when code is pushed
+**`/quote/<token>`** — Customer quote approval page
+- Customer sees line items, total, and notes
+- One tap to Approve or Decline
+- Approved quotes trigger job creation in admin
 
-**Admin login:** admin / handyman2026 *(change this — see below)*
+**`/invoice/<token>`** — Customer invoice and payment page
+- Shows invoice total
+- Mock payment flow (replace with Square — see Step 4)
 
----
+### Admin Panel (`/admin`)
 
-## What You Need to Do to Go Live
+- **Dashboard** — stat cards (new leads, open jobs, pending quotes, revenue), recent leads with phone numbers, quick action buttons, one-tap booking link copy
+- **Leads** — full lead list with phone, status filters, view/edit each lead
+- **Lead Detail** — view all customer photos (grid), update status, add notes, convert to quote
+- **Quote Builder** — pre-populated line items per service type, editable, tax field, notes
+- **Quote Detail** — view quote, edit quote, discard quote (resets lead to queue), send link
+- **Jobs** — track job status from pending → complete
+- **Invoices** — track payment status
+- **Customers** — full customer history
 
-### Step 1 — Change Your Admin Password (5 minutes)
-Right now the password is the default. Change it before sharing the URL with anyone.
+### Infrastructure
 
-1. Go to dashboard.render.com
-2. Click north-orlando-handyman → Environment
-3. Add env var: `ADMIN_PASS` → set it to whatever you want
-4. Save — app restarts in 30 seconds
-
----
-
-### Step 2 — Set Up Twilio for Lead Notifications (30 minutes)
-Right now you get zero notification when a lead comes in. This is the most important thing to fix.
-
-1. Sign up at twilio.com (free trial, ~$15 to fund)
-2. Get a phone number (costs ~$1/month)
-3. From your Twilio console, grab:
-   - Account SID
-   - Auth Token
-   - Your Twilio phone number
-4. Add these to Render environment variables:
-   - `TWILIO_ACCOUNT_SID` = your SID
-   - `TWILIO_AUTH_TOKEN` = your token
-   - `TWILIO_FROM` = your Twilio number (format: +14075550100)
-   - `TWILIO_ALERT_TO` = your personal cell (format: +14075550100)
-5. Tell your developer (or AI agent) to wire up the notification in `app.py` — it's about 10 lines of code in the `request_form()` route
-
-**What you'll get:** A text to your phone the instant a customer submits a request. Includes their name, phone number, and service type.
+- Hosted on Render Starter plan ($7/month) — always on, no cold starts
+- Persistent disk at `/data` ($0.25/month) — database survives every code deploy
+- GitHub: `github.com/tblankenship87/north-orlando-handyman` (public — fork to own it)
+- Auto-deploys on every push to `main` branch
+- Stack: Python/Flask + SQLite + Bootstrap 5 (no frameworks, easy to extend)
 
 ---
 
-### Step 3 — Set Up SendGrid for Email (30 minutes)
-So customers automatically receive their quote link by email instead of you copy-pasting it.
+## What You Need to Plug In
 
-1. Sign up at sendgrid.com (free tier = 100 emails/day, plenty)
-2. Verify your sender email (use tyler@northorlandohandyman.com or your Gmail)
-3. Create an API key
-4. Add to Render environment variables:
-   - `SENDGRID_API_KEY` = your key
-   - `SENDGRID_FROM` = your verified sender email
-5. Tell your developer to wire it up in the quote send route — about 15 lines
-
-**What you'll get:** When you hit "Send Quote" in the admin, the customer automatically gets an email with their quote link. Professional, no copy-paste.
+### Step 1 — Change Admin Password (5 min)
+Go to `dashboard.render.com` → north-orlando-handyman → Environment → add:
+- `ADMIN_PASS` = your chosen password
 
 ---
 
-### Step 4 — Set Up Stripe for Real Payments (1 hour)
-Right now the Pay Now button is a demo — no real money moves.
+### Step 2 — Connect n8n Webhook (15 min)
+Every lead submission fires a POST to your n8n webhook automatically.
 
-1. Sign up at stripe.com (free — they take 2.9% + 30¢ per transaction)
-2. Complete business verification
-3. From your Stripe dashboard → Developers → API Keys:
-   - Copy your Publishable Key and Secret Key
-4. Add to Render environment variables:
-   - `STRIPE_SECRET_KEY` = your secret key
-   - `STRIPE_PUBLISHABLE_KEY` = your publishable key
-5. Tell your developer to replace the mock payment in `invoice_view()` with a real Stripe checkout session
+Add to Render environment variables:
+- `N8N_WEBHOOK_URL` = your n8n webhook URL
 
-**What you'll get:** Customers can actually pay invoices online. Money hits your bank account via Stripe's standard payout schedule (2 business days by default).
+**Payload sent to n8n on every lead:**
+```json
+{
+  "id": 42,
+  "name": "Jane Smith",
+  "phone": "4075550100",
+  "email": "jane@example.com",
+  "address": "123 Main St, Lake Mary FL",
+  "service_type": "Bathroom Fan Replacement",
+  "description": "Fan is noisy and slow",
+  "preferred_date": "2026-04-05",
+  "tier": "1",
+  "photo_count": 3,
+  "submitted_at": "2026-03-28T14:00:00",
+  "admin_url": "https://north-orlando-handyman.onrender.com/admin/leads/42"
+}
+```
 
----
-
-### Step 5 — Set Up Calendly for Scheduling (15 minutes)
-So customers can book their own appointment after approving a quote.
-
-1. Sign up at calendly.com (free tier works)
-2. Connect your Google Calendar
-3. Set your availability (what days/hours you're available for jobs)
-4. Copy your Calendly link (looks like calendly.com/your-name/handyman-job)
-5. Add to Render environment variables:
-   - `CALENDLY_URL` = your link
-6. Tell your developer to add a "Schedule Your Appointment" button to the quote approval page that links to this URL
-
-**What you'll get:** After a customer approves your quote, they see a button to pick a time slot. It books directly to your Google Calendar. No back-and-forth texting about availability.
+From n8n you can wire this to: Google Sheets, SMS via Twilio, Google Calendar, Square, email — whatever your workflow needs.
 
 ---
 
-### Step 6 — Point Your Domain (15 minutes)
-Add a subdomain so customers can book at a real URL instead of the Render default.
+### Step 3 — Add Your Real Content (1 hour)
 
-Option A — **Use a subdomain** (recommended, keeps your existing site intact):
-- Add a CNAME record in your domain DNS:
-  - Name: `app` (or `book` or `portal`)
-  - Target: `north-orlando-handyman.onrender.com`
-- Add the custom domain in Render dashboard → Settings → Custom Domains
-- Result: customers go to `app.northorlandohandyman.com`
+**Service prices** — in `app.py`, find `FLAT_RATE_SERVICES`. Update the `"price"` value on each service to match what you actually charge.
 
-Option B — **Replace your main site**:
-- Point `northorlandohandyman.com` directly to this app
-- Your existing site goes away — only do this if you're ready to replace it
+**Service photos** — replace the `"photo_url"` Unsplash links with real photos of your work. Upload to Google Drive or Imgur and paste the direct URL.
+
+**Reviews** — in `templates/book.html`, find the reviews section. Replace the 3 placeholder reviews with real quotes from your Google reviews.
+
+**Phone number** — search `templates/book.html` for `(407) 123-4567` and replace with your real number.
+
+**Service area** — in `templates/book.html`, update the city tags if you serve areas outside Seminole County.
 
 ---
 
-### Step 7 — Update Your Service Rates (30 minutes)
-The quote builder has suggested pricing but it's ballpark numbers. You need to set your actual rates.
+### Step 4 — Square Payments for Deposits (1-2 hours)
+You said you use Square. When you're ready to collect deposits at booking:
 
-In the GitHub repo, open `app.py` and find `SERVICE_QUOTE_TEMPLATES`. Update the `unit_price` values to match what you actually charge. You can do this with any AI agent — just paste the section and say "update these prices."
-
----
-
-## Taking Full Ownership of the Code
-
-If you want to own the codebase yourself:
-
-1. Create a GitHub account at github.com
-2. Go to github.com/tblankenship87/north-orlando-handyman
-3. Click **Fork** (top right) — creates your own copy
-4. Create a Render account at render.com
-5. Connect your forked GitHub repo to a new Render web service
-6. Add your environment variables
-7. Add the persistent disk (/data, 1GB)
-8. Your app is now 100% yours — Tyler's copy is just the demo
+1. Get your Square API credentials from `developer.squareup.com`
+2. Add to Render env vars: `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`
+3. Tell your AI agent: *"Wire up Square Checkout in the request form for tier-1 flat-rate bookings. Charge a $50 deposit at booking time using Square. Credentials are in the env vars."*
 
 ---
 
-## Monthly Cost Summary (fully operational)
+### Step 5 — Google Calendar Integration (via n8n)
+Since you're using n8n — handle calendar from there. When a lead comes in with `tier: "1"`:
+- n8n creates a Google Calendar event
+- n8n sends a confirmation SMS to the customer
+- No code changes needed on this side
+
+---
+
+### Step 6 — Point Your Domain (15 min)
+
+**Option A — Subdomain (keep existing WordPress site):**
+Add a CNAME in your DNS:
+- Name: `book` (or `app`)
+- Target: `north-orlando-handyman.onrender.com`
+Result: customers go to `book.northorlandohandyman.com`
+
+**Option B — Replace your main site:**
+Point `northorlandohandyman.com` directly to this app. Your WordPress site goes away.
+
+---
+
+### Step 7 — Postgres + DigitalOcean Spaces (when you're ready to scale)
+You mentioned wanting Postgres and DO Spaces eventually. Current setup handles hundreds of leads fine on SQLite. When you hit volume:
+
+- **Postgres**: Render has a free Postgres tier. Tell your AI agent: *"Migrate the app from SQLite to Postgres. Add DATABASE_URL env var pointing to Render Postgres."*
+- **DO Spaces**: For photo storage outside the DB. Tell your AI agent: *"Move photo storage from base64-in-SQLite to DigitalOcean Spaces. Use boto3 with DO endpoint."*
+
+---
+
+## Taking Full Ownership
+
+1. Create a GitHub account if you don't have one
+2. Go to `github.com/tblankenship87/north-orlando-handyman` → **Fork**
+3. Create a Render account → connect your forked repo → new web service
+4. Add the persistent disk (Disks → `/data`, 1GB)
+5. Add your env vars
+6. Done — you own it, Tyler's copy is just the demo
+
+---
+
+## Monthly Cost (fully operational)
 
 | Item | Cost |
 |---|---|
 | Render hosting | $7.00/month |
-| Render disk (database) | $0.25/month |
-| Twilio phone number | ~$1.00/month |
-| Twilio SMS (~200 texts) | ~$2.00/month |
-| SendGrid email | Free |
-| Stripe | 2.9% + 30¢ per payment |
-| Calendly | Free |
-| **Total fixed** | **~$10.25/month** |
-
-At one job per month you've paid for the whole system.
+| Render disk | $0.25/month |
+| Square | 2.6% + 10¢ per transaction |
+| n8n cloud (optional) | $20/month or self-host free |
+| **Total fixed** | **~$7.25/month** |
 
 ---
 
-## What Your AI Agent Can Build Next
+## How to Brief Your AI Agent
 
-Once the above is done, here's what to ask your AI agent to add:
+Paste this at the start of any new session:
 
-- **Google Review request** — after marking a job complete, automatically text the customer a Google Review link
-- **Automated follow-up** — if a lead hasn't heard back in 24 hours, auto-text them
-- **Recurring jobs** — for customers who want regular maintenance visits
-- **Job photos** — let Kyle upload before/after photos to a job record
-- **Customer portal login** — let repeat customers log in to see all their job history
-- **Upgrade to PostgreSQL** — swap SQLite for a proper database when volume grows
-
-Each of these is 1-3 hours of work for an AI agent with the codebase context.
+> "I have a Flask web app at github.com/[your-username]/north-orlando-handyman. Stack: Python/Flask, SQLAlchemy, SQLite (persistent on Render disk at /data), Bootstrap 5. The main file is app.py. It's a handyman booking and CRM system for North Orlando Handyman. Current env vars on Render: SECRET_KEY, DATABASE_URL, N8N_WEBHOOK_URL. I need you to [describe what you want]."
 
 ---
 
-## How to Give Your AI Agent Context
+## What to Build Next
 
-When starting a new session with your AI agent, paste this:
+Ask your AI agent for any of these — each is 1-3 hours:
 
-> "I have a Flask CRM app at github.com/[your-username]/north-orlando-handyman. It uses Flask + SQLAlchemy + SQLite + Bootstrap 5. The main file is app.py. I need you to [describe what you want]. Here are my current environment variables: [list them]."
-
-That gives the agent everything it needs to pick up right where we left off.
+- **SMS confirmation to customer** on form submit (Twilio, ~30 min)
+- **Google Review request SMS** after job marked complete
+- **Embeddable booking widget** for your WordPress site (iframe or JS embed)
+- **Multi-service cart** — let customers book multiple services in one request (like North Seattle)
+- **Before/after photo uploads** by admin on job completion
+- **Customer portal** — repeat customers log in to see job history
+- **Automated follow-up** — if lead hasn't heard back in 24h, auto-text
 
 ---
 
-*Questions? The codebase is clean and well-commented. Any competent developer or AI agent can extend it.*
+*Codebase is clean, well-commented, and fully yours. Any AI agent or developer can pick it up from this doc.*
