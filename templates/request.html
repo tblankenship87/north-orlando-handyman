@@ -5,9 +5,20 @@
   <div class="col-lg-7">
     <div class="card shadow-sm border-0">
       <div class="card-header text-white" style="background:#1a2744;">
+        {% if prefill_tier == '1' %}
+        <h4 class="mb-0">📅 Book a Flat-Rate Job</h4>
+        <small class="opacity-75">Fill in your details and we'll confirm your appointment</small>
+        {% else %}
         <h4 class="mb-0">📋 Request a Free Estimate</h4>
         <small class="opacity-75">We'll get back to you within the hour</small>
+        {% endif %}
       </div>
+      {% if prefill_tier == '1' %}
+      <div class="alert alert-warning border-0 rounded-0 mb-0" style="font-size:0.85rem;">
+        ⚡ <strong>Flat-Rate Booking</strong> — You'll pay the listed price on completion. No surprises.
+        <a href="{{ url_for('book_landing') }}" class="float-end text-muted" style="font-size:0.8rem;">← Back to services</a>
+      </div>
+      {% endif %}
       <div class="card-body p-4">
         <form method="POST" enctype="multipart/form-data">
           <div class="row g-3">
@@ -32,7 +43,7 @@
               <select name="service_type" class="form-select" required>
                 <option value="">— Select a service —</option>
                 {% for s in services %}
-                  <option value="{{ s }}">{{ s }}</option>
+                  <option value="{{ s }}" {% if prefill_service == s %}selected{% endif %}>{{ s }}</option>
                 {% endfor %}
               </select>
             </div>

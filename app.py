@@ -215,9 +215,60 @@ STATUS_COLORS = {
 
 # ── Public Routes ────────────────────────────────────────────────────────────
 
+FLAT_RATE_SERVICES = [
+    {
+        "category": "Bathroom",
+        "emoji": "🚿",
+        "services": [
+            {"name": "Bathroom Fan Replacement", "desc": "Remove old fan, install new (fan provided by homeowner). Includes wiring and drywall patch if needed.", "time": "2–3 hrs", "price": 175, "id": "bath-fan"},
+            {"name": "Faucet or Shower Repair", "desc": "Fix leaky faucet, replace cartridge, or swap out a faucet. Parts provided by homeowner.", "time": "1–2 hrs", "price": 125, "id": "faucet"},
+            {"name": "Caulk & Grout Refresh", "desc": "Remove old caulk and grout, clean, regrout and recaulk tub or shower surround.", "time": "2–3 hrs", "price": 150, "id": "caulk"},
+            {"name": "Toilet Repair or Replace", "desc": "Fix running toilet, replace flapper, or swap out toilet. Parts/fixture provided by homeowner.", "time": "1–2 hrs", "price": 110, "id": "toilet"},
+        ]
+    },
+    {
+        "category": "Kitchen",
+        "emoji": "🍳",
+        "services": [
+            {"name": "Dishwasher Installation", "desc": "Remove old dishwasher and install new one. Connections must be accessible.", "time": "2–3 hrs", "price": 200, "id": "dishwasher"},
+            {"name": "Kitchen Faucet Replacement", "desc": "Swap out kitchen faucet. New faucet provided by homeowner.", "time": "1–2 hrs", "price": 125, "id": "kitchen-faucet"},
+            {"name": "Cabinet Hardware Upgrade", "desc": "Remove old pulls/knobs and install new hardware on up to 20 cabinets.", "time": "1–2 hrs", "price": 95, "id": "cabinet-hardware"},
+            {"name": "Under-Sink Reverse Osmosis Install", "desc": "Install RO water filter system under kitchen sink. System provided by homeowner.", "time": "2–3 hrs", "price": 200, "id": "ro-water"},
+        ]
+    },
+    {
+        "category": "General & Electrical",
+        "emoji": "🔧",
+        "services": [
+            {"name": "Ceiling Fan Installation", "desc": "Install ceiling fan where existing light fixture is present. Fan provided by homeowner.", "time": "1–2 hrs", "price": 130, "id": "ceiling-fan"},
+            {"name": "Light Fixture Replacement", "desc": "Swap out up to 3 light fixtures. Fixtures provided by homeowner.", "time": "1–2 hrs", "price": 110, "id": "light-fixture"},
+            {"name": "Doorbell Installation", "desc": "Install wired or smart doorbell. Device provided by homeowner.", "time": "1 hr", "price": 95, "id": "doorbell"},
+            {"name": "Smoke & CO2 Detector Replacement", "desc": "Replace up to 6 detectors. Detectors provided by homeowner.", "time": "1 hr", "price": 85, "id": "smoke-detector"},
+        ]
+    },
+    {
+        "category": "Doors, Walls & Assembly",
+        "emoji": "🚪",
+        "services": [
+            {"name": "Door Adjustment or Repair", "desc": "Fix sticking, sagging, or misaligned interior door. Includes hinge adjustment and strike plate.", "time": "1 hr", "price": 95, "id": "door-adjust"},
+            {"name": "Furniture Assembly", "desc": "Assemble flat-pack furniture — beds, desks, shelving, dressers. Price per item, up to 2 hrs.", "time": "1–2 hrs", "price": 95, "id": "furniture"},
+            {"name": "Shelf & TV Mount Installation", "desc": "Mount up to 3 shelves or one TV mount. Hardware included.", "time": "1–2 hrs", "price": 95, "id": "shelves"},
+            {"name": "Wall Repair / Drywall Patch", "desc": "Patch holes up to 6\" in drywall, texture match, and paint ready.", "time": "1–2 hrs", "price": 120, "id": "drywall"},
+        ]
+    },
+]
+
 @app.route('/')
 def index():
-    return redirect(url_for('request_form'))
+    return redirect(url_for('book_landing'))
+
+@app.route('/book')
+def book_landing():
+    return render_template('book.html', flat_rate_services=FLAT_RATE_SERVICES)
+
+@app.route('/services')
+def services_redirect():
+    return redirect(url_for('book_landing'))
 
 
 @app.route('/request', methods=['GET', 'POST'])
@@ -253,7 +304,10 @@ def request_form():
         print(f"\n🔔 NEW LEAD: {lead.name} | {lead.phone} | {lead.service_type}\n")
 
         return redirect(url_for('request_thanks'))
-    return render_template('request.html', services=SERVICE_TYPES, sources=LEAD_SOURCES)
+    prefill_service = request.args.get('service', '')
+    prefill_tier = request.args.get('tier', '')
+    return render_template('request.html', services=SERVICE_TYPES, sources=LEAD_SOURCES,
+                           prefill_service=prefill_service, prefill_tier=prefill_tier)
 
 
 @app.route('/request/thanks')
